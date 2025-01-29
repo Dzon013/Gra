@@ -4,7 +4,7 @@ from Postacie import Bohater
 from Postacie import Bohater2
 
 pygame.init()
-okno = pygame.display.set_mode((1291, 829))
+okno = pygame.display.set_mode((1200, 886))
 
 
 def pierwszy_swiat():
@@ -27,9 +27,8 @@ def pierwszy_swiat():
 
 def lobby():
     run = True
-    zegar = 0
     bohater1 = Bohater(500, 500)
-    bohater2 = Bohater2(200, 200)
+    bohater2 = Bohater2(500, 500)
     przyciski = [Przyciski(1000, 600, "Przycisk"),
                  Przyciski(1000, 700, "Wyjdź"),
                  Przyciski(100, 0, "Postac1"),
@@ -38,8 +37,10 @@ def lobby():
                  Przyciski(1000, 500, "Multiplayer")
                  ]
     tlo = pygame.image.load("Zdjęcia/Lobby.png")
+    draw_bohater1 = False
+    draw_bohater2 = False
+
     while run:
-        zegar += pygame.time.Clock().tick(60) / 1000
         for event in pygame.event.get():
             if event == pygame.QUIT:
                 run = False
@@ -59,25 +60,30 @@ def lobby():
         przyciski[3].draw(okno)
         przyciski[4].draw(okno)
         przyciski[5].draw(okno)
-
-        if przyciski[2].tick():
+        if draw_bohater1 is True:
             bohater1.draw(okno)
 
-        if przyciski[3].tick():
+        if draw_bohater2 is True:
             bohater2.draw(okno)
+
+        if przyciski[2].tick():
+            draw_bohater1 = True
+            draw_bohater2 = False
+
+        if przyciski[3].tick():
+            draw_bohater1 = False
+            draw_bohater2 = True
 
         pygame.display.update()
 
 
 def main():
     run = True
-    zegar = 0
     przyciski = [
         Przyciski(550, 444, "Przycisk"),
         Przyciski(550, 550, "Wyjdź")
     ]
     while run:
-        zegar += pygame.time.Clock().tick(60) / 1000
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
