@@ -12,10 +12,14 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
     pauza = False
     tlo = pygame.image.load("Zdjęcia/mapa.png")
     przyciski = {
-        "wyjdz": Przyciski(500, 500, "Wyjdź")
+        "wyjdz": Przyciski(500, 500, "Wyjdź"),
+        "graj": Przyciski(300, 500, "Graj")
     }
     belki = {
         "granica1": Belki(0, -10, 820, 10, (0, 0, 0)),
+        "granica2": Belki(1, 1, 10, 1291, (0, 0, 0)),
+        "granica3": Belki(1281, -10, 1291, 10, (0, 0, 0)),
+        "granica4": Belki(0, 710, 10, 1291, (0, 0, 0)),
         "wioska": Belki(690, 620, 50, 50, (255, 0, 100)),
         "las": Belki(80, 520, 50, 50, (255, 200, 100)),
         "jaskinia": Belki(950, 530, 50, 50, (55, 60, 100)),
@@ -49,8 +53,10 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
                 pauza = not pauza
 
-        okno.blit(tlo, (0, 0))
         belki["granica1"].draw(okno)
+        belki["granica2"].draw(okno)
+        belki["granica3"].draw(okno)
+        belki["granica4"].draw(okno)
         belki["wioska"].draw(okno)
         belki["miasto"].draw(okno)
         belki["las"].draw(okno)
@@ -59,6 +65,8 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         belki["boss"].draw(okno)
         belki["zbrojownia"].draw(okno)
         belki["drugi_swiat"].draw(okno)
+
+        okno.blit(tlo, (0, 0))
 
         if draw_bohater1 is True:
             bohater1.draw(okno)
@@ -86,6 +94,22 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
             pass
         if bohater1.hitbox.colliderect(belki["jaskinia"].hitbox):
             pass
+        if bohater1.hitbox.colliderect(belki["boss"].hitbox):
+            pass
+        if bohater1.hitbox.colliderect(belki["drugi_swiat"].hitbox):
+            pass
+        if bohater1.hitbox.colliderect(belki["zbrojownia"].hitbox):
+            pass
+        if bohater1.hitbox.colliderect(belki["cmentarz"].hitbox):
+            pass
+        if bohater1.hitbox.colliderect(belki["granica1"].hitbox):
+            pass
+        if bohater1.hitbox.colliderect(belki["granica2"].hitbox):
+            pass
+        if bohater1.hitbox.colliderect(belki["granica3"].hitbox):
+            pass
+        if bohater1.hitbox.colliderect(belki["granica4"].hitbox):
+            pass
 
         if bohater2.hitbox.colliderect(belki["wioska"].hitbox):
             pass
@@ -95,14 +119,46 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
             pass
         if bohater2.hitbox.colliderect(belki["jaskinia"].hitbox):
             pass
+        if bohater2.hitbox.colliderect(belki["boss"].hitbox):
+            pass
+        if bohater2.hitbox.colliderect(belki["drugi_swiat"].hitbox):
+            pass
+        if bohater2.hitbox.colliderect(belki["zbrojownia"].hitbox):
+            pass
+        if bohater2.hitbox.colliderect(belki["cmentarz"].hitbox):
+            pass
+        if bohater2.hitbox.colliderect(belki["granica1"].hitbox):
+            pass
+        if bohater2.hitbox.colliderect(belki["granica2"].hitbox):
+            pass
+        if bohater2.hitbox.colliderect(belki["granica3"].hitbox):
+            pass
+        if bohater2.hitbox.colliderect(belki["granica4"].hitbox):
+            pass
 
-        if bohater2.hitbox.colliderect(belki["wioska"].hitbox):
+        if bohater3.hitbox.colliderect(belki["wioska"].hitbox):
             pass
-        if bohater2.hitbox.colliderect(belki["miasto"].hitbox):
+        if bohater3.hitbox.colliderect(belki["miasto"].hitbox):
             pass
-        if bohater2.hitbox.colliderect(belki["las"].hitbox):
+        if bohater3.hitbox.colliderect(belki["las"].hitbox):
             pass
-        if bohater2.hitbox.colliderect(belki["jaskinia"].hitbox):
+        if bohater3.hitbox.colliderect(belki["jaskinia"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["boss"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["drugi_swiat"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["zbrojownia"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["cmentarz"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["granica1"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["granica2"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["granica3"].hitbox):
+            pass
+        if bohater3.hitbox.colliderect(belki["granica4"].hitbox):
             pass
 
         pygame.display.update()
