@@ -1,7 +1,9 @@
 import pygame
 from Przyciski import Przyciski
 from Postacie import Bohater
+from Postacie import Przeciwnik
 from Belki import Belki
+
 
 pygame.init()
 okno = pygame.display.set_mode((1291, 720))
@@ -10,10 +12,21 @@ okno = pygame.display.set_mode((1291, 720))
 def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
     run = True
     pauza = False
-    tlo = pygame.image.load("Zdjęcia/mapa.png")
+    tlo = pygame.image.load("Zdjęcia/tla/mapa.png")
+    tlo2 = pygame.image.load("Zdjęcia/tla/dialog.png")
+    teksty = {"Pauza": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "PAUZA", True, (255, 255, 255)),
+              "Tekst2": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Jeśli chcesz wrócic naciśnij klawisz `p`.", True, (255, 255, 255)),
+              "Zdrowie": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "ZDROWIE", True, (255, 255, 255)),
+              "oslona": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OSLONA", True, (255, 255, 255)),
+              "obrazenia": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OBRAZENIA", True, (255, 255, 255)),
+              "dialog1": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Czy chcesz udać sie do lasu ?", True, (255, 255, 255)),
+              "dialog2": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Czy chcesz udać sie do jaskini ?", True, (255, 255, 255)),
+              "dialog3": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Czy chcesz udać sie do miasta ?", True, (255, 255, 255)),
+              "dialog4": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Czy chcesz udać sie na cmentarz ?", True, (255, 255, 255))
+              }
     przyciski = {
         "wyjdz": Przyciski(500, 500, "Wyjdź"),
-        "graj": Przyciski(300, 500, "Graj")
+        "tak": Przyciski(900, 600, "tak")
     }
     belki = {
         "granica1": Belki(0, -10, 820, 10, (0, 0, 0)),
@@ -45,9 +58,9 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
     postacie = {"postac1": "Zdjęcia/Bohater.png",
                 "postac2": "Zdjęcia/Bohater/stand.png",
                 "postac3": "Zdjęcia/Bohater3.png"}
-    bohater1 = Bohater(735, 311, postacie["postac1"])
-    bohater2 = Bohater(735, 311, postacie["postac2"])
-    bohater3 = Bohater(735, 311, postacie["postac3"])
+    bohater1 = Bohater(735, 311, postacie["postac1"], 100, 10, 1)
+    bohater2 = Bohater(735, 311, postacie["postac2"], 100, 10, 1)
+    bohater3 = Bohater(735, 311, postacie["postac3"], 100, 10, 1)
     while run:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN and event.key == pygame.K_p:
@@ -69,13 +82,24 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         okno.blit(tlo, (0, 0))
 
         if draw_bohater1 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater1.draw(okno)
         if draw_bohater2 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater2.draw(okno)
         if draw_bohater3 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater3.draw(okno)
 
         if pauza is True:
+            okno.blit(teksty["Pauza"], (0, 0))
+            okno.blit(teksty["Tekst2"], (0, 200))
             przyciski["wyjdz"].draw(okno)
             if przyciski["wyjdz"].tick():
                 run = False
@@ -89,11 +113,26 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         if bohater1.hitbox.colliderect(belki["wioska"].hitbox):
             pass
         if bohater1.hitbox.colliderect(belki["miasto"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog3"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                miasto(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater1.hitbox.colliderect(belki["las"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog1"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                las(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater1.hitbox.colliderect(belki["jaskinia"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog2"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                jaskinia(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater1.hitbox.colliderect(belki["boss"].hitbox):
             pass
         if bohater1.hitbox.colliderect(belki["drugi_swiat"].hitbox):
@@ -101,7 +140,12 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         if bohater1.hitbox.colliderect(belki["zbrojownia"].hitbox):
             pass
         if bohater1.hitbox.colliderect(belki["cmentarz"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog4"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                cmentarz(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater1.hitbox.colliderect(belki["granica1"].hitbox):
             pass
         if bohater1.hitbox.colliderect(belki["granica2"].hitbox):
@@ -114,11 +158,26 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         if bohater2.hitbox.colliderect(belki["wioska"].hitbox):
             pass
         if bohater2.hitbox.colliderect(belki["miasto"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog3"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                miasto(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater2.hitbox.colliderect(belki["las"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog1"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                las(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater2.hitbox.colliderect(belki["jaskinia"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog2"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                jaskinia(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater2.hitbox.colliderect(belki["boss"].hitbox):
             pass
         if bohater2.hitbox.colliderect(belki["drugi_swiat"].hitbox):
@@ -126,7 +185,12 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         if bohater2.hitbox.colliderect(belki["zbrojownia"].hitbox):
             pass
         if bohater2.hitbox.colliderect(belki["cmentarz"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog4"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                cmentarz(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater2.hitbox.colliderect(belki["granica1"].hitbox):
             pass
         if bohater2.hitbox.colliderect(belki["granica2"].hitbox):
@@ -139,11 +203,25 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         if bohater3.hitbox.colliderect(belki["wioska"].hitbox):
             pass
         if bohater3.hitbox.colliderect(belki["miasto"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog3"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():miasto(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater3.hitbox.colliderect(belki["las"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog1"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                las(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater3.hitbox.colliderect(belki["jaskinia"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog2"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                jaskinia(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater3.hitbox.colliderect(belki["boss"].hitbox):
             pass
         if bohater3.hitbox.colliderect(belki["drugi_swiat"].hitbox):
@@ -151,7 +229,12 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         if bohater3.hitbox.colliderect(belki["zbrojownia"].hitbox):
             pass
         if bohater3.hitbox.colliderect(belki["cmentarz"].hitbox):
-            pass
+            okno.blit(tlo2, (0, 500))
+            okno.blit(teksty["dialog4"], (0, 500))
+            przyciski["tak"].draw(okno)
+            if przyciski["tak"].tick():
+                cmentarz(draw_bohater1, draw_bohater2, draw_bohater3)
+
         if bohater3.hitbox.colliderect(belki["granica1"].hitbox):
             pass
         if bohater3.hitbox.colliderect(belki["granica2"].hitbox):
@@ -164,9 +247,78 @@ def mapa(draw_bohater1, draw_bohater2, draw_bohater3):
         pygame.display.update()
 
 
-def pierwszy_swiat(draw_bohater1, draw_bohater2, draw_bohater3):
+def las(draw_bohater1, draw_bohater2, draw_bohater3):
     run = True
+    pauza = False
+    teksty = {"Pauza": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "PAUZA", True, (255, 255, 255)),
+              "Tekst2": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Jeśli chcesz wrócic naciśnij klawisz `p`.", True, (255, 255, 255)),
+              "Zdrowie": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "ZDROWIE", True, (255, 255, 255)),
+              "oslona": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OSLONA", True, (255, 255, 255)),
+              "obrazenia": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OBRAZENIA", True, (255, 255, 255))
+              }
+    przyciski = {"wyjdz": Przyciski(500, 500, "Wyjdź"),
+                 "graj": Przyciski(300, 500, "Przycisk")}
 
+    postacie = {"postac1": "Zdjęcia/Bohater.png",
+                "postac2": "Zdjęcia/Bohater/stand.png",
+                "postac3": "Zdjęcia/Bohater3.png"}
+
+    przeciwnik = {"przeciwnik": "Zdjęcia/goblin.png"}
+    
+    bohater1 = Bohater(375, 540, postacie["postac1"], 100, 10, 1)
+    bohater2 = Bohater(375, 540, postacie["postac2"], 100, 10, 1)
+    bohater3 = Bohater(375, 540, postacie["postac3"], 100, 10, 1)
+
+    przeciwnik = Przeciwnik(800, 540, przeciwnik["przeciwnik"], 50, 10, 5)
+
+    tlo = pygame.image.load("Zdjęcia/tla/las.png")
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.type == pygame.K_ESCAPE:
+                pauza = not pauza
+
+        okno.blit(tlo, (0, 0))
+
+        if draw_bohater1 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater1.draw(okno)
+        if draw_bohater2 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater2.draw(okno)
+        if draw_bohater3 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater3.draw(okno)
+
+        if pauza is True:
+            okno.blit(teksty["Pauza"], (0, 0))
+            okno.blit(teksty["Tekst2"], (0, 200))
+            przyciski["wyjdz"].draw(okno)
+            if przyciski["wyjdz"].tick():
+                run = False
+            pygame.display.update()
+            continue
+
+        pygame.display.update()
+
+
+def cmentarz(draw_bohater1, draw_bohater2, draw_bohater3):
+    run = True
+    pauza = False
+    teksty = {"Pauza": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "PAUZA", True, (255, 255, 255)),
+              "Tekst2": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Jeśli chcesz wrócic naciśnij klawisz `p`.", True, (255, 255, 255)),
+              "Zdrowie": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "ZDROWIE", True, (255, 255, 255)),
+              "oslona": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OSLONA", True, (255, 255, 255)),
+              "obrazenia": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OBRAZENIA", True, (255, 255, 255))
+              }
+    przyciski = {"wyjdz": Przyciski(500, 500, "Wyjdź"),
+                 "graj": Przyciski(300, 500, "Przycisk")}
     strzalki = {"up": pygame.K_UP,
                 "down": pygame.K_DOWN,
                 "left": pygame.K_LEFT,
@@ -183,34 +335,189 @@ def pierwszy_swiat(draw_bohater1, draw_bohater2, draw_bohater3):
     postacie = {"postac1": "Zdjęcia/Bohater.png",
                 "postac2": "Zdjęcia/Bohater/stand.png",
                 "postac3": "Zdjęcia/Bohater3.png"}
-    bohater1 = Bohater(500, 500, postacie["postac1"])
-    bohater2 = Bohater(500, 500, postacie["postac2"])
-    bohater3 = Bohater(500, 500, postacie["postac3"])
+    bohater1 = Bohater(375, 540, postacie["postac1"], 100, 10, 1)
+    bohater2 = Bohater(375, 540, postacie["postac2"], 100, 10, 1)
+    bohater3 = Bohater(375, 540, postacie["postac3"], 100, 10, 1)
 
-    tlo = pygame.image.load("Zdjęcia/las.png")
+    tlo = pygame.image.load("Zdjęcia/tla/cmentarz.png")
 
     while run:
         for event in pygame.event.get():
-            if event == pygame.QUIT:
-                run = False
+            if event.type == pygame.KEYDOWN and event.type == pygame.K_ESCAPE:
+                pauza = not pauza
 
-        bohater1.tick(strzalki["up"], strzalki["down"], strzalki["left"], strzalki["right"])
-        bohater2.tick(wsad["w"], wsad["s"], wsad["a"], wsad["d"])
-        bohater3.tick(ikjl["5"], ikjl["2"], ikjl["1"], ikjl["3"])
         okno.blit(tlo, (0, 0))
 
         if draw_bohater1 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater1.draw(okno)
         if draw_bohater2 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater2.draw(okno)
         if draw_bohater3 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater3.draw(okno)
+
+        if pauza is True:
+            okno.blit(teksty["Pauza"], (0, 0))
+            okno.blit(teksty["Tekst2"], (0, 200))
+            przyciski["wyjdz"].draw(okno)
+            if przyciski["wyjdz"].tick():
+                run = False
+            pygame.display.update()
+            continue
+
+        pygame.display.update()
+
+
+def jaskinia(draw_bohater1, draw_bohater2, draw_bohater3):
+    run = True
+    pauza = False
+    teksty = {"Pauza": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "PAUZA", True, (255, 255, 255)),
+              "Tekst2": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Jeśli chcesz wrócic naciśnij klawisz `p`.", True, (255, 255, 255)),
+              "Zdrowie": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "ZDROWIE", True, (255, 255, 255)),
+              "oslona": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OSLONA", True, (255, 255, 255)),
+              "obrazenia": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OBRAZENIA", True, (255, 255, 255))
+              }
+    przyciski = {"wyjdz": Przyciski(500, 500, "Wyjdź"),
+                 "graj": Przyciski(300, 500, "Przycisk")}
+    strzalki = {"up": pygame.K_UP,
+                "down": pygame.K_DOWN,
+                "left": pygame.K_LEFT,
+                "right": pygame.K_RIGHT}
+    wsad = {"w": pygame.K_w,
+            "s": pygame.K_s,
+            "a": pygame.K_a,
+            "d": pygame.K_d}
+    ikjl = {"5": pygame.K_i,
+            "2": pygame.K_k,
+            "1": pygame.K_j,
+            "3": pygame.K_l}
+
+    postacie = {"postac1": "Zdjęcia/Bohater.png",
+                "postac2": "Zdjęcia/Bohater/stand.png",
+                "postac3": "Zdjęcia/Bohater3.png"}
+    bohater1 = Bohater(375, 540, postacie["postac1"], 100, 10, 1)
+    bohater2 = Bohater(375, 540, postacie["postac2"], 100, 10, 1)
+    bohater3 = Bohater(375, 540, postacie["postac3"], 100, 10, 1)
+
+    tlo = pygame.image.load("Zdjęcia/tla/jaskinia.png")
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYUP and event.type == pygame.K_ESCAPE:
+                pauza = not pauza
+
+        okno.blit(tlo, (0, 0))
+
+        if draw_bohater1 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater1.draw(okno)
+        if draw_bohater2 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater2.draw(okno)
+        if draw_bohater3 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater3.draw(okno)
+
+        if pauza is True:
+            okno.blit(teksty["Pauza"], (0, 0))
+            okno.blit(teksty["Tekst2"], (0, 200))
+            przyciski["wyjdz"].draw(okno)
+            if przyciski["wyjdz"].tick():
+                run = False
+            pygame.display.update()
+            continue
+
+        pygame.display.update()
+
+
+def miasto(draw_bohater1, draw_bohater2, draw_bohater3):
+    run = True
+    pauza = False
+    teksty = {"Pauza": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "PAUZA", True, (255, 255, 255)),
+              "Tekst2": pygame.font.Font.render(pygame.font.SysFont("arial", 50), "Jeśli chcesz wrócic naciśnij klawisz `p`.", True, (255, 255, 255)),
+              "Zdrowie": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "ZDROWIE", True, (255, 255, 255)),
+              "oslona": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OSLONA", True, (255, 255, 255)),
+              "obrazenia": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OBRAZENIA", True, (255, 255, 255)),
+              }
+    przyciski = {"wyjdz": Przyciski(500, 500, "Wyjdź"),
+                 "graj": Przyciski(300, 500, "Przycisk")}
+    strzalki = {"up": pygame.K_UP,
+                "down": pygame.K_DOWN,
+                "left": pygame.K_LEFT,
+                "right": pygame.K_RIGHT}
+    wsad = {"w": pygame.K_w,
+            "s": pygame.K_s,
+            "a": pygame.K_a,
+            "d": pygame.K_d}
+    ikjl = {"5": pygame.K_i,
+            "2": pygame.K_k,
+            "1": pygame.K_j,
+            "3": pygame.K_l}
+
+    postacie = {"postac1": "Zdjęcia/Bohater.png",
+                "postac2": "Zdjęcia/Bohater/stand.png",
+                "postac3": "Zdjęcia/Bohater3.png"}
+    bohater1 = Bohater(375, 540, postacie["postac1"], 100, 10, 1)
+    bohater2 = Bohater(375, 540, postacie["postac2"], 100, 10, 1)
+    bohater3 = Bohater(375, 540, postacie["postac3"], 100, 10, 1)
+
+    tlo = pygame.image.load("Zdjęcia/tla/miasto.png")
+
+    while run:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN and event.type == pygame.K_ESCAPE:
+                pauza = not pauza
+
+        okno.blit(tlo, (0, 0))
+
+        if draw_bohater1 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater1.draw(okno)
+        if draw_bohater2 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater2.draw(okno)
+        if draw_bohater3 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
+            bohater3.draw(okno)
+
+        if pauza is True:
+            okno.blit(teksty["Pauza"], (0, 0))
+            okno.blit(teksty["Tekst2"], (0, 200))
+            przyciski["wyjdz"].draw(okno)
+            if przyciski["wyjdz"].tick():
+                run = False
+            pygame.display.update()
+            continue
 
         pygame.display.update()
 
 
 def lobby(draw_bohater1, draw_bohater2, draw_bohater3):
     run = True
+    teksty = {"Zdrowie": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "ZDROWIE", True, (255, 255, 255)),
+              "oslona": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OSLONA", True, (255, 255, 255)),
+              "obrazenia": pygame.font.Font.render(pygame.font.SysFont("arial", 20), "OBRAZENIA", True, (255, 255, 255))
+              }
     sterowanie = {"WSAD": pygame.image.load("Zdjęcia/sterowanie1.png"),
                   "GLDP": pygame.image.load("Zdjęcia/sterowanie2.png"),
                   "IKJL": pygame.image.load("Zdjęcia/sterowanie3.png")
@@ -218,9 +525,9 @@ def lobby(draw_bohater1, draw_bohater2, draw_bohater3):
     postacie = {"postac1": "Zdjęcia/Bohater.png",
                 "postac2": "Zdjęcia/Bohater/stand.png",
                 "postac3": "Zdjęcia/Bohater3.png"}
-    bohater1 = Bohater(500, 500, postacie["postac1"])
-    bohater2 = Bohater(500, 500, postacie["postac2"])
-    bohater3 = Bohater(500, 500, postacie["postac3"])
+    bohater1 = Bohater(500, 500, postacie["postac1"], 100, 10, 1)
+    bohater2 = Bohater(500, 500, postacie["postac2"], 100, 10, 1)
+    bohater3 = Bohater(500, 500, postacie["postac3"], 100, 10, 1)
 
     przyciski = {"Graj": Przyciski(1000, 400, "Przycisk"),
                  "Wyjdź": Przyciski(1000, 500, "Wyjdź"),
@@ -230,7 +537,7 @@ def lobby(draw_bohater1, draw_bohater2, draw_bohater3):
                  "Multiplayer": Przyciski(1000, 600, "Multiplayer")
                  }
 
-    tlo = pygame.image.load("Zdjęcia/Lobby.png")
+    tlo = pygame.image.load("Zdjęcia/tla/Lobby.png")
 
     while run:
         for event in pygame.event.get():
@@ -251,14 +558,23 @@ def lobby(draw_bohater1, draw_bohater2, draw_bohater3):
         przyciski["Multiplayer"].draw(okno)
 
         if draw_bohater1 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater1.draw(okno)
             okno.blit(sterowanie["WSAD"], (1000, 0))
 
         if draw_bohater2 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater2.draw(okno)
             okno.blit(sterowanie["GLDP"], (1000, 0))
 
         if draw_bohater3 is True:
+            okno.blit(teksty["Zdrowie"], (0, 550))
+            okno.blit(teksty["oslona"], (0, 450))
+            okno.blit(teksty["obrazenia"], (0, 350))
             bohater3.draw(okno)
             okno.blit(sterowanie["IKJL"], (1000, 0))
 
@@ -298,7 +614,7 @@ def main():
         if przyciski["Wyjdz"].tick():
             run = False
 
-        okno.blit(pygame.image.load("Zdjęcia/tło początkowe.png"), (0, 0))
+        okno.blit(pygame.image.load("Zdjęcia/tla/tło początkowe.png"), (0, 0))
         przyciski["Graj"].draw(okno)
         przyciski["Wyjdz"].draw(okno)
         pygame.display.update()
